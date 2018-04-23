@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Voting.Web.Hubs;
 
 namespace Voting.Web
 {
@@ -22,6 +23,8 @@ namespace Voting.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR();
+            services.AddTransient<VotingHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,7 +42,13 @@ namespace Voting.Web
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
+            app.UseSignalR(builder => 
+            {
+                builder.MapHub<VotingHub>("/votinghub");
+            });
+
             app.UseMvc();
+
         }
     }
 }

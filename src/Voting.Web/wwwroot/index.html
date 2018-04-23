@@ -4,28 +4,46 @@
     <link rel="stylesheet" type="text/css" href="css/default.css" />
     <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet" />
     <title>Yet another voting app</title>
-
-    <script language="JavaScript">
-        function send(form){
-        }
-    </script>
-
 </head>
 <body>
-    <div id="container">
-      <center>
-        <div id="logo">Yet another voting app</div>
-        <div id="space"></div>
-        <div id="form">
-        <button name="vote" value="{{button1}}" onclick="send()" class="button button1">
-          <i class="em em-cat"></i> Cats - 0
-        </button>
-        <div id="space"></div>
-        <button name="vote" value="{{button2}}" onclick="send()" class="button button2">
-          <i class="em em-dog"></i> Dogs - 0
-        </button>
-        <div id="space"></div>
-      </center>
-    </div>     
+  <div id="container">
+    <center>
+      <div id="logo">Yet another voting app</div>
+      <div id="space"></div>
+      <div id="form">
+      <button name="vote" value="{{button1}}" onclick="send('cats')" class="button button1">
+        <i class="em em-cat"></i> Cats - <span id='cats'></span>
+      </button>
+      <div id="space"></div>
+      <button name="vote" value="{{button2}}" onclick="send('dogs')" class="button button2">
+        <i class="em em-dog"></i> Dogs - <span id='dogs'></span>
+      </button>
+      <div id="space"></div>
+    </center>
+  </div>
+  <script src="https://unpkg.com/@aspnet/signalr@1.0.0-preview2-final/dist/browser/signalr.js"></script>
+  <script>
+  var connected = false
+  var connection = new signalR.HubConnection('/votinghub')
+  connection.start()
+    .then(() => {
+      console.log('connected')
+      connection.on('resultsChanged', resultsChanged)
+      resultsChanged({dogs: 0, cats: 0})
+      connected = true
+    })
+    .catch(err => console.error)
+
+  function resultsChanged(results) {
+    document.getElementById('cats').textContent = results.cats
+    document.getElementById('dogs').textContent = results.dogs
+  }
+
+  function send(vote) {
+    if (connected) {
+      connection.invoke('Vote', vote)
+    }
+  }
+  </script>
 </body>
 </html>
