@@ -1,3 +1,8 @@
+@page
+@{
+    Layout = null;
+    string title = Environment.GetEnvironmentVariable("TITLE") ?? "Yet another voting app";
+}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -8,7 +13,7 @@
 <body>
   <div id="container">
     <center>
-      <div id="logo">Yet another voting app</div>
+      <div id="logo">@title</div>
       <div id="space"></div>
       <div id="form">
       <button name="vote" value="{{button1}}" onclick="send('cats')" class="button button1">
@@ -21,7 +26,7 @@
       <div id="space"></div>
     </center>
   </div>
-  <script src="https://unpkg.com/@aspnet/signalr@1.0.0-preview2-final/dist/browser/signalr.js"></script>
+  <script src="https://unpkg.com/@@aspnet/signalr@@1.0.0-preview2-final/dist/browser/signalr.js"></script>
   <script>
   var connected = false
   var connection = new signalR.HubConnection('/votinghub')

@@ -4,3 +4,6 @@ services:
     build: src/Voting.Web
     ports:
     - "8081:80"
+    environment:
+      TITLE: "aka.ms/sfvote"
+      

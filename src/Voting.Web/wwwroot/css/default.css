@@ -16,10 +16,10 @@ div#space {
 
 div#logo {
   display:block;
-  margin: 0 auto;
+  margin: 0 auto; 
   width: 90%;
   text-align: center;
-  font-size: 48px;
+  font-size: 60px;
   font-family:Helvetica;  
   /*border-bottom: 1px solid black;*/   
 }
