@@ -1,0 +1,6 @@
+version: '3'
+services:
+  web:
+    build: src/Voting.Web
+    ports:
+    - "8081:80"
