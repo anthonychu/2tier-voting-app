@@ -6,4 +6,6 @@ services:
     - "8081:80"
     environment:
       TITLE: "aka.ms/sfvote"
-      
+      API_BASE_URL: "http://api"
+  api:
+    build: src/Voting.Api

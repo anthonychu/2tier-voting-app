@@ -8,16 +8,19 @@ namespace Voting.Web.Controllers
     public class ResetController
     {
         private readonly IHubContext<VotingHub> context;
+        private readonly VotingService votingService;
 
-        public ResetController(IHubContext<VotingHub> context)
+        public ResetController(IHubContext<VotingHub> context, VotingService votingService)
         {
             this.context = context;
+            this.votingService = votingService;
         }
 
         [HttpPost("api/reset")]
-        public Task Post()
+        public async Task Post()
         {
-            return VotingHub.Reset(context);
+            var results = await votingService.ResetResultsAsync();
+            await VotingHub.ResetAsync(context, results);
         }
     }
 }

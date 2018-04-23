@@ -1,48 +1,36 @@
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace Voting.Web.Hubs
 {
     public class VotingHub : Hub
     {
-        private static VotingResults results = new VotingResults();
-        private static object lockObject = new object();
+        private readonly VotingService votingService;
+
+        public VotingHub(VotingService votingService)
+        {
+            this.votingService = votingService;
+        }
 
         public async Task Vote(string vote)
         {
-            lock (lockObject)
-            {
-                if (vote == "cats")
-                {
-                    results.Cats += 1;
-                }
-                else if (vote == "dogs")
-                {
-                    results.Dogs += 1;
-                }
-            }
+            var results = await votingService.VoteAsync(vote);
             await Clients.All.SendAsync("resultsChanged", results);
         }
 
-        public static async Task Reset(IHubContext<VotingHub> context)
+        public static async Task ResetAsync(IHubContext<VotingHub> context, VotingResults results)
         {
-            lock (lockObject)
-            {
-                results.Dogs = results.Cats = 0;
-            }
             await context.Clients.All.SendAsync("resultsChanged", results);
         }
 
         public async override Task OnConnectedAsync()
         {
+            var results = await votingService.GetResultsAsync();
             await Clients.Caller.SendAsync("resultsChanged", results);
             await base.OnConnectedAsync();
         }
-    }
-
-    public class VotingResults
-    {
-        public int Cats { get; set; } = 0;
-        public int Dogs { get; set; } = 0;
     }
 }
