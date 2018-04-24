@@ -2,6 +2,10 @@ body {
   background-color:#F8F8F8;
 }
 
+body, .button {
+  touch-action: manipulation;
+}
+
 div#container {
   margin-top:5%;
 }
