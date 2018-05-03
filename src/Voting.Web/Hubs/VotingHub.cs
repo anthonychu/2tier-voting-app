@@ -8,9 +8,9 @@ namespace Voting.Web.Hubs
 {
     public class VotingHub : Hub
     {
-        private readonly VotingService votingService;
+        private readonly IVotingService votingService;
 
-        public VotingHub(VotingService votingService)
+        public VotingHub(IVotingService votingService)
         {
             this.votingService = votingService;
         }

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Voting.Web
 {
-    public class VotingService
+    public class VotingService : IVotingService
     {
         private readonly HttpClient httpClient;
         private readonly string baseUrl = 

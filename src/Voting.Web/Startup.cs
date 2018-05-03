@@ -26,7 +26,7 @@ namespace Voting.Web
             services.AddMvc();
             services.AddSignalR();
             services.AddSingleton<HttpClient>();
-            services.AddSingleton<VotingService>();
+            services.AddSingleton<IVotingService, VotingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

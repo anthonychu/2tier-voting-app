@@ -8,9 +8,9 @@ namespace Voting.Web.Controllers
     public class ResetController
     {
         private readonly IHubContext<VotingHub> context;
-        private readonly VotingService votingService;
+        private readonly IVotingService votingService;
 
-        public ResetController(IHubContext<VotingHub> context, VotingService votingService)
+        public ResetController(IHubContext<VotingHub> context, IVotingService votingService)
         {
             this.context = context;
             this.votingService = votingService;
