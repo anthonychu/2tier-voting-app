@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 using Voting.Web.Hubs;
 
 namespace Voting.Web
@@ -26,7 +27,18 @@ namespace Voting.Web
             services.AddMvc();
             services.AddSignalR();
             services.AddSingleton<HttpClient>();
-            services.AddSingleton<IVotingService, VotingService>();
+
+            var redisConnectionString = Environment.GetEnvironmentVariable("REDIS_CONNECTION_STRING");
+            if (string.IsNullOrEmpty(redisConnectionString))
+            {
+                services.AddSingleton<IVotingService, ApiVotingService>();
+            }
+            else
+            {
+                var redisConnection = ConnectionMultiplexer.Connect(redisConnectionString);
+                services.AddSingleton<ConnectionMultiplexer>(redisConnection);
+                services.AddTransient<IVotingService, RedisVotingService>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

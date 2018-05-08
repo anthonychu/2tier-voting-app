@@ -1,0 +1,111 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "westus",
+      "metadata": {
+        "description": "Location of the resources."
+      }
+    },
+    "appName": {
+      "type": "string",
+      "defaultValue": "Voting"
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-03-01-privatepreview",
+      "name": "VotingNetwork",
+      "type": "Microsoft.ServiceFabric/networks",
+      "location": "[parameters('location')]",
+      "dependsOn": [],
+      "properties": {
+        "description": "Private network for application",
+        "addressPrefix": "10.0.0.4/22",
+        "ingressConfig": {
+          "qosLevel": "bronze",
+          "layer4": [
+            {
+              "publicPort": "80",
+              "applicationName": "Voting",
+              "serviceName": "VotingWeb",
+              "endpointName": "Endpoint1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "apiVersion": "2018-03-01-privatepreview",
+      "name": "Voting",
+      "type": "Microsoft.ServiceFabric/applications",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Cache/Redis/', parameters('appName'))]"
+      ],
+      "properties": {
+        "description": "Voting App",
+        "services": [
+          {
+            "name": "VotingWeb",
+            "properties": {
+              "description": "Voting Web service",
+              "osType": "linux",
+              "codePackages": [
+                {
+                  "name": "VotingWeb.Code",
+                  "image": "anthonychu/votingweb:0.7",
+                  "endpoints": [
+                    {
+                      "name": "Endpoint1",
+                      "port": 80
+                    }
+                  ],
+                  "environmentVariables": [
+                    {
+                      "name": "TITLE",
+                      "value": "aka.ms/votingapp"
+                    },
+                    {
+                      "name": "REDIS_CONNECTION_STRING",
+                      "value": "[concat(parameters('appName'),'.redis.cache.windows.net,abortConnect=false,ssl=true,password=', listKeys(resourceId('Microsoft.Cache/Redis', parameters('appName')), '2015-08-01').primaryKey)]"
+                    }
+                  ],
+                  "resources": {
+                    "requests": {
+                      "cpu": 1,
+                      "memoryInGB": 2
+                    }
+                  }
+                }
+              ],
+              "replicaCount": 1,
+              "networkRefs": [
+                {
+                  "name": "[resourceId('Microsoft.ServiceFabric/networks', 'VotingNetwork')]"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Cache/Redis",
+      "name": "[parameters('appName')]",
+      "apiVersion": "2017-10-01",
+      "location": "[parameters('location')]",
+      "properties": {
+          "sku": {
+              "name": "Standard",
+              "family": "C",
+              "capacity": 0
+          },
+          "redisConfiguration": {},
+          "enableNonSslPort": false
+      }
+  }
+  ]
+}

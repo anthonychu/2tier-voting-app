@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 
 namespace Voting.Web
 {
-    public class VotingService : IVotingService
+    public class ApiVotingService : IVotingService
     {
         private readonly HttpClient httpClient;
         private readonly string baseUrl = 
             Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://localhost:5001";
 
-        public VotingService(HttpClient httpClient)
+        public ApiVotingService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
         }
