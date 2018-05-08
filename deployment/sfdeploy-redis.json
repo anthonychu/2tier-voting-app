@@ -56,7 +56,7 @@
               "codePackages": [
                 {
                   "name": "VotingWeb.Code",
-                  "image": "anthonychu/votingweb:0.7",
+                  "image": "anthonychu/votingweb:0.8",
                   "endpoints": [
                     {
                       "name": "Endpoint1",

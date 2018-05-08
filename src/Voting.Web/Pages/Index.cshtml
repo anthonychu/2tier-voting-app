@@ -16,12 +16,15 @@
       <div id="logo">@title</div>
       <div id="space"></div>
       <div id="form">
-      <button name="vote" value="{{button1}}" onclick="send('cats')" class="button button1">
-        <i class="em em-cat"></i> Cats - <span id='cats'></span>
-      </button>
       <div id="space"></div>
-      <button name="vote" value="{{button2}}" onclick="send('dogs')" class="button button2">
+      <button name="vote" onclick="send('dogs')" class="button button1">
         <i class="em em-dog"></i> Dogs - <span id='dogs'></span>
+      </button>
+      <button name="vote" onclick="send('bunnies')" class="button button1">
+        <i class="em em-rabbit"></i> Bunnies - <span id='bunnies'></span>
+      </button>
+      <button name="vote" onclick="send('horses')" class="button button1">
+        <i class="em em-horse"></i> Horses - <span id='horses'></span>
       </button>
       <div id="space"></div>
     </center>
@@ -45,7 +48,7 @@
     connection.start()
       .then(() => {
         console.log('connected')
-        resultsChanged({dogs: 0, cats: 0})
+        resultsChanged({dogs: 0, bunnies: 0, horses: 0})
         connected = true
       })
       .catch(err => {
@@ -56,20 +59,25 @@
   }
 
   var current = {
-    cats: 0,
-    dogs: 0
+    dogs: 0,
+    bunnies: 0,
+    horses: 0
   }
   function resultsChanged(results) {
     // sometimes updates come in out of order, so only update when results are increasing
-    var resetting = !results.dogs && !results.cats
+    var resetting = !results.dogs && !results.bunnies && !results.horses
     if (resetting || results.dogs > current.dogs) {
       document.getElementById('dogs').textContent = results.dogs
     }
-    if (resetting || results.cats > current.cats) {
-      document.getElementById('cats').textContent = results.cats
+    if (resetting || results.bunnies > current.bunnies) {
+      document.getElementById('bunnies').textContent = results.bunnies
+    }
+    if (resetting || results.horses > current.horses) {
+      document.getElementById('horses').textContent = results.horses
     }
     current.dogs = results.dogs
-    current.cats = results.cats
+    current.bunnies = results.bunnies
+    current.horses - results.horses
   }
 
   function send(vote) {

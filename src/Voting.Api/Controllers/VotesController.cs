@@ -23,13 +23,17 @@ namespace Voting.Api.Controllers
         {
             lock (lockObject)
             {
-                if (vote == "cats")
-                {
-                    results.Cats += 1;
-                }
-                else if (vote == "dogs")
+                if (vote == "dogs")
                 {
                     results.Dogs += 1;
+                }
+                else if (vote == "bunnies")
+                {
+                    results.Bunnies += 1;
+                }
+                else if (vote == "horses")
+                {
+                    results.Horses += 1;
                 }
             }
             return results;
@@ -40,7 +44,7 @@ namespace Voting.Api.Controllers
         {
             lock (lockObject)
             {
-                results.Dogs = results.Cats = 0;
+                results.Dogs = results.Bunnies = results.Horses = 0;
             }
             return results;
         }
@@ -48,7 +52,8 @@ namespace Voting.Api.Controllers
 
     public class VotingResults
     {
-        public int Cats { get; set; } = 0;
         public int Dogs { get; set; } = 0;
+        public int Bunnies { get; set; } = 0;
+        public int Horses { get; set; } = 0;
     }
 }

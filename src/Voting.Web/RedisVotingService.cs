@@ -17,9 +17,9 @@ namespace Voting.Web
 
         public async Task<VotingResults> VoteAsync(string vote)
         {
-            if (vote != "dogs" && vote != "cats")
+            if (vote != "dogs" && vote != "bunnies" && vote != "horses")
             {
-                throw new ArgumentException("Must be dogs or cats");
+                throw new ArgumentException("Must be dogs, bunnies, or horses");
             }
 
             await db.HashIncrementAsync("votes", vote, 1);
@@ -31,8 +31,9 @@ namespace Voting.Web
             var results = (await db.HashGetAllAsync("votes")).ToStringDictionary();
             return new VotingResults
             {
-                Cats = results.ContainsKey("cats") ? Convert.ToInt32(results["cats"]) : 0,
-                Dogs = results.ContainsKey("dogs") ? Convert.ToInt32(results["dogs"]) : 0
+                Dogs = results.ContainsKey("dogs") ? Convert.ToInt32(results["dogs"]) : 0,
+                Bunnies = results.ContainsKey("bunnies") ? Convert.ToInt32(results["bunnies"]) : 0,
+                Horses = results.ContainsKey("horses") ? Convert.ToInt32(results["horses"]) : 0
             };
         }
 
@@ -40,8 +41,9 @@ namespace Voting.Web
         {
             await db.HashSetAsync("votes", new HashEntry[]
             {
-                new HashEntry("cats", 0),
-                new HashEntry("dogs", 0)
+                new HashEntry("dogs", 0),
+                new HashEntry("bunnies", 0),
+                new HashEntry("horses", 0)
             });
             return new VotingResults();
         }
